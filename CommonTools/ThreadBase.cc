@@ -1,6 +1,6 @@
 #include "ThreadBase.h"
 
-namespace pobo
+namespace dai
 {
     ThreadBase::ThreadBase(const std::string &name)
         : m_Name(name)

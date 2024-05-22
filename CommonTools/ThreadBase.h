@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <sys/syscall.h>
 
-namespace pobo
+namespace dai
 {
 	class ThreadBase
 	{

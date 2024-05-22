@@ -4,8 +4,7 @@
  * @Date: 2022-07-13 09:02:21
  * @LastEditTime: 2022-08-26 13:52:13
  */
-#ifndef _POBO_TOOL_H_
-#define _POBO_TOOL_H_
+#pragma once
 
 #include <locale>
 #include <iconv.h>
@@ -13,7 +12,7 @@
 #include <vector>
 #include <string>
 
-namespace pobo
+namespace dai
 {
    // 生成校验码
    unsigned short GetCheckCode(const char *src, unsigned short size);
@@ -38,5 +37,3 @@ namespace pobo
    // 正则解析子串
    std::string SubStringByRegex(const std::string &src, const std::string &regex_pattern);
 }
-
-#endif

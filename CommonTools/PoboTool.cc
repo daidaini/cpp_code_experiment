@@ -11,7 +11,7 @@
 
 #include <boost/filesystem.hpp>
 
-namespace pobo
+namespace dai
 {
     namespace fs = boost::filesystem;
     unsigned short GetCheckCode(const char *src, unsigned short size)
