@@ -5,5 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_CXX_FLAGS "-ggdb")
 
-#add_executable(test_algorithm test_algorithm.cpp)
-add_executable(test_vector test_vector.cpp)
+add_definitions(-DFMT_HEADER_ONLY)
+
+add_executable(test_algorithm test_algorithm.cpp)
+#add_executable(test_vector test_vector.cpp)

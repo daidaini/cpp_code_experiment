@@ -1,8 +1,6 @@
 #pragma once
 
-#include "CommInc.h"
-
-using namespace std;
+#include "../StdCommFiles.h"
 
 class Widget //: public enable_shared_from_this<Widget>
 {

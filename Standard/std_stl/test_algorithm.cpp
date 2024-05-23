@@ -1,7 +1,4 @@
-#include <algorithm>
-#include <vector>
-#include <list>
-#include <iostream>
+#include "TestAlgorithm.hpp"
 
 using namespace std;
 
@@ -33,7 +30,9 @@ void test_transform()
 
 int main(int argc, char *argv[])
 {
-    test_transform();
+    // test_transform();
+
+    Algorithm::test_std_find();
 
     return 0;
 }

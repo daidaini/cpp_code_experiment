@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CommInc.h"
+#include "../StdCommFiles.h"
 
 namespace ForEachTest
 {
@@ -131,7 +131,7 @@ inline namespace Algorithm
 		cover_vec.emplace_back(rec_3);
 		cover_vec.emplace_back(rec_4);
 
-		string code = "510400";
+		string code = "510300";
 		auto it = std::find_if(cover_vec.begin(), cover_vec.end(),
 							   [&code](const CoveredQuota &elem)
 							   { return elem.StockCode == code; });
@@ -146,6 +146,7 @@ inline namespace Algorithm
 		}
 	}
 
+	/*
 	void test_partial_sum()
 	{
 		std::vector<int> v{2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
@@ -162,7 +163,7 @@ inline namespace Algorithm
 		}
 		std::cout << '\n';
 	}
-
+	*/
 	struct AdItem
 	{
 		std::string ad_id;

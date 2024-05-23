@@ -2,8 +2,6 @@
 #include <list>
 #include <iostream>
 
-// #include <boost/test/auto_unit_test.hpp>
-
 using namespace std;
 
 void test_resize()
@@ -12,7 +10,6 @@ void test_resize()
 
     src.resize(3);
 
-    // cout << src.size() << endl;
     try
     {
         cout << src.at(2) << '\n';
