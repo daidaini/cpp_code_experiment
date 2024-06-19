@@ -93,11 +93,20 @@ private:
         if (msg.find("|6014|") != msg.npos)
         {
             // 模拟产生Segmentation Fault
-            int *ptr = nullptr;
+            // int *ptr = nullptr;
             // 试图通过空指针访问内存
-            *ptr = 42; // 这行代码将导致段错误
+            //*ptr = 42; // 这行代码将导致段错误
+
+            conn->send("A|any|1|Y|This is response for 6014|");
         }
-        conn->send(errorRsp.data(), errorRsp.size());
+        else if (msg.find("6012") != msg.npos)
+        {
+            conn->send("A|any|1|Y|Are you query money detail?|");
+        }
+        else
+        {
+            conn->send(errorRsp.data(), errorRsp.size());
+        }
     }
 
     void OnLogin(const TcpConnectionPtr &conn, const std::string &msg)

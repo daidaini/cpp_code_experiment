@@ -20,11 +20,11 @@ project(${PRJ_NAME})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -ggdb") 
 
-include_directories(../../ThirdPart)
-add_source(../../ThirdPart/muduo/net)
-add_source(../../ThirdPart/muduo/base)
+include_directories(../../GeneralThirdPart)
+add_source(../../GeneralThirdPart/muduo/net)
+add_source(../../GeneralThirdPart/muduo/base)
 
-add_source(../../common)
+#add_source(../../CommonTools)
 
 add_definitions(-DFMT_HEADER_ONLY)
 
