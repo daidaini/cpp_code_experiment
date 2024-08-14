@@ -1,14 +1,11 @@
-/*
- * @Descripttion:
- * @Author: yubo
- * @Date: 2022-10-12 13:24:31
- * @LastEditTime: 2022-10-12 17:10:03
- */
-
 #include <fmt/format.h>
 
+#include <syscall.h>
 #include <thread>
 #include <string>
+#include <vector>
+
+#include "../../CommonTools/TimerLog.h"
 
 #include <boost/pool/pool.hpp>
 #include <boost/pool/object_pool.hpp>
@@ -52,8 +49,8 @@ void Test_Pool_Ordered()
     {
         usleep(1000);
 
-        //4096 -- 1.6
-        //1024 -- 1.6
+        // 4096 -- 1.6
+        // 1024 -- 1.6
         char *data1 = static_cast<char *>(pool1.ordered_malloc(1 + i / sizeof(UnitType)));
         strncpy(data1, "second try", sizeof(UnitType));
 
@@ -112,11 +109,11 @@ void Test_ObjectPool_String()
         usleep(1000);
         auto data = pool.construct();
 
-        data->Data = std::string(10*(i+1), 'c');
+        data->Data = std::string(10 * (i + 1), 'c');
 
         pool.free(data);
 
-        //pool.destroy(data);
+        // pool.destroy(data);
     }
 
     fmt::print("finished\n");
@@ -136,7 +133,7 @@ void Test_ObjectPool()
         data->m_Data = "123456789";
         data->m_Key = 1;
         // fmt::print("ptr = {}\n", fmt::ptr(data));
-        //fmt::print("output = {}\n", data->m_Data);
+        // fmt::print("output = {}\n", data->m_Data);
         pool.free(data);
 
         // fmt::print("output = {}\n", data->m_Data.empty() ? "null" : data->m_Data);
@@ -197,15 +194,82 @@ void Test_SingletionPool_MultiThread()
     getchar();
 }
 
+/**
+ * @brief 测试pool和 singleton_pool 在多线程下的效率
+ */
+
+void TestEfficiency_Pool(int thCnt, int repeatTimes)
+{
+    TimerLog log("pool");
+    std::vector<std::thread> ths;
+
+    for (int n = 0; n < thCnt; ++n)
+    {
+        ths.emplace_back(std::thread(
+            [repeatTimes]()
+            {
+                thread_local pool<> t_pool(64 * 1024);
+                for (int i = 0; i < repeatTimes; ++i)
+                {
+                    char *buf = (char *)t_pool.malloc();
+                    sprintf(buf, "%ld, %d", ::syscall(SYS_gettid), i);
+
+                    // printf("[pool]%s\n", buf);
+
+                    t_pool.free(buf);
+                }
+            }));
+    }
+
+    for (auto &th : ths)
+    {
+        th.join();
+    }
+}
+
+void TestEfficiency_SingletonPool(int thCnt, int repeatTimes)
+{
+    using singlepool = singleton_pool<pool_tag, 64 * 1024>;
+    TimerLog log("singleton pool");
+
+    std::vector<std::thread> ths;
+
+    for (int n = 0; n < thCnt; ++n)
+    {
+        ths.emplace_back(std::thread(
+            [repeatTimes]()
+            {
+                for (int i = 0; i < repeatTimes; ++i)
+                {
+                    char *buf = (char *)singlepool::malloc();
+                    sprintf(buf, "%ld, %d", ::syscall(SYS_gettid), i);
+
+                    // printf("[singlepool]%s\n", buf);
+                    singlepool::free(buf);
+                }
+            }));
+    }
+
+    for (auto &th : ths)
+    {
+        th.join();
+    }
+}
+
 int main(int argc, char *argv[])
 {
+    getchar();
+    TestEfficiency_Pool(200, 10000);
+
+    // TestEfficiency_SingletonPool(16, 10000);
+
     // Test_Pool();
-    Test_Pool_Ordered();
+    // Test_Pool_Ordered();
 
     // Test_Pool_MultiThread();
 
-    //Test_ObjectPool();
-    //Test_ObjectPool_String();
+    // Test_ObjectPool();
+    // Test_ObjectPool_String();
 
     // Test_SingletionPool();
 
