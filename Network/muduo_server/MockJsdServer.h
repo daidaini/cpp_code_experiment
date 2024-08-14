@@ -61,15 +61,21 @@ public:
 
     void OnMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp time)
     {
-        std::string msg = buf->retrieveAllAsString();
+        // std::string msg = buf->retrieveAllAsString();
+        std::string msg = std::string(buf->peek(), buf->readableBytes());
         if (msg.find("ping") != msg.npos)
         {
             fmt::print(fg(fmt::color::cornflower_blue), "[{}]This is ontime ping request\n", ::syscall(SYS_gettid));
-            conn->send(buf);
+            buf->retrieve(2);
+            fmt::print("total = {}, left = {}\n", msg.size(), buf->readableBytes());
+            buf->retrieve(buf->readableBytes());
+            fmt::print("empty = {}\n", buf->readableBytes());
+            conn->send(msg.data(), msg.size());
         }
         else
         {
             fmt::print(fg(fmt::color::orange_red), "[{}]Recv message : {}\n", ::syscall(SYS_gettid), msg);
+            buf->retrieveAll();
         }
     }
 
