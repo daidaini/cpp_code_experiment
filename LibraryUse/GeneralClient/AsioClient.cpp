@@ -92,8 +92,13 @@ namespace HD
 
     void AsioClient::Close()
     {
-        g_IoContext.post([this]()
-                         { this->m_Socket->close(); });
+        m_NeedReConnect.store(false);
+
+        g_IoContext.post(
+            [this]()
+            {
+                this->m_Socket->close();
+            });
     }
 
     void AsioClient::DoRead()
@@ -121,7 +126,10 @@ namespace HD
 
                     // 断开连接
                     m_Connected = false;
-                    this->m_Socket->close();
+                    if (this->m_Socket != nullptr)
+                    {
+                        this->m_Socket->close();
+                    }
                 }
             });
     }
@@ -169,7 +177,10 @@ namespace HD
                 {
                     this->m_Cb(ErrorCode::Fail, ec.message().c_str(), ec.message().size());
                     m_Connected = false;
-                    this->m_Socket->close();
+                    if (this->m_Socket != nullptr)
+                    {
+                        this->m_Socket->close();
+                    }
                 }
             });
     }
@@ -188,6 +199,10 @@ namespace HD
         m_RepeatTimer->async_wait(
             [this, seconds](const boost::system::error_code &ec)
             {
+                if (this == nullptr || !this->m_NeedReConnect)
+                {
+                    return;
+                }
                 if (!ec)
                 {
                     if (m_Socket != nullptr && !m_Connected)

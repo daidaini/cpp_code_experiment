@@ -58,6 +58,10 @@ int main(int argc, char *argv[])
     }
 
     getchar();
+
+    send_msg(client, "prepare to end", 14);
+    ::sleep(1);
+
     delete_client(client);
 
     return 0;

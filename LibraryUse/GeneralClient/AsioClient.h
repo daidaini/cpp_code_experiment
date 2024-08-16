@@ -6,6 +6,7 @@
 #include <thread>
 #include <deque>
 #include "ClientDataDefine.h"
+#include <atomic>
 
 namespace HD
 {
@@ -43,6 +44,7 @@ namespace HD
         OnMsgFuncType m_Cb;
 
         bool m_Connected{false};
+        std::atomic_bool m_NeedReConnect{true};
 
         std::thread m_IoThread;
 
