@@ -4,7 +4,7 @@
 #include <cassert>
 #include <cstring>
 #include <string>
-
+#include <thread>
 #include <unistd.h>
 
 using CreateClientFuncType = void *(*)(const char *, OnConnectionFuncType, OnMsgFuncType);
@@ -26,7 +26,7 @@ void OnConnection(ErrorCode code)
     }
 }
 
-int main(int argc, char *argv[])
+void Test()
 {
     void *handle = dlopen("libGeneralClient.so", RTLD_LAZY);
 
@@ -55,14 +55,25 @@ int main(int argc, char *argv[])
         char buf[64]{};
         sprintf(buf, "This is |%d| msg", 6011 + i);
         send_msg(client, buf, strlen(buf));
+        ::usleep(50000);
     }
 
-    getchar();
+    // getchar();
 
     send_msg(client, "prepare to end", 14);
     ::sleep(1);
 
     delete_client(client);
+}
 
+int main(int argc, char *argv[])
+{
+    for (int i = 0; i < 2; ++i)
+    {
+        std::thread([]()
+                    { Test(); })
+            .detach();
+    }
+    getchar();
     return 0;
 }

@@ -37,6 +37,7 @@ namespace HD
         std::string m_Host;
         std::string m_Port;
 
+        boost::asio::io_context m_IoContext;
         std::unique_ptr<boost::asio::ip::tcp::socket> m_Socket;
         std::unique_ptr<boost::asio::ip::tcp::resolver> m_Resolver;
 

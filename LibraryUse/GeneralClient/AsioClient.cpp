@@ -1,11 +1,6 @@
 #include "AsioClient.h"
 #include "StringFunc.h"
 
-namespace
-{
-    boost::asio::io_context g_IoContext;
-}
-
 namespace HD
 {
     AsioClient::AsioClient(const std::string &ipAddr, OnConnectionFuncType connCb, OnMsgFuncType cb)
@@ -22,7 +17,7 @@ namespace HD
         m_Cb = cb;
         m_ReadBuffer = new char[MAX_BUFFER_SIZE]{};
 
-        m_Resolver = std::unique_ptr<boost::asio::ip::tcp::resolver>(new boost::asio::ip::tcp::resolver(g_IoContext));
+        m_Resolver = std::unique_ptr<boost::asio::ip::tcp::resolver>(new boost::asio::ip::tcp::resolver(m_IoContext));
     }
 
     AsioClient::~AsioClient()
@@ -39,15 +34,15 @@ namespace HD
         Connect();
 
         m_IoThread = std::thread(
-            []()
+            [this]()
             {
-                g_IoContext.run();
+                m_IoContext.run();
             });
     }
 
     void AsioClient::Connect()
     {
-        m_Socket = std::unique_ptr<boost::asio::ip::tcp::socket>(new boost::asio::ip::tcp::socket(g_IoContext));
+        m_Socket = std::unique_ptr<boost::asio::ip::tcp::socket>(new boost::asio::ip::tcp::socket(m_IoContext));
 
         m_Resolver->async_resolve(
             m_Host, m_Port,
@@ -94,7 +89,7 @@ namespace HD
     {
         m_NeedReConnect.store(false);
 
-        g_IoContext.post(
+        m_IoContext.post(
             [this]()
             {
                 this->m_Socket->close();
@@ -136,7 +131,7 @@ namespace HD
 
     void AsioClient::SendMsg(const std::string &message)
     {
-        g_IoContext.post(
+        m_IoContext.post(
             [this, msg = message]()
             {
                 bool writing = !m_WriteMsgs.empty();
@@ -187,7 +182,7 @@ namespace HD
 
     void AsioClient::StartRepeatTimer()
     {
-        m_RepeatTimer = std::unique_ptr<boost::asio::deadline_timer>(new boost::asio::deadline_timer(g_IoContext));
+        m_RepeatTimer = std::unique_ptr<boost::asio::deadline_timer>(new boost::asio::deadline_timer(m_IoContext));
 
         DoRepeatTimer();
     }
