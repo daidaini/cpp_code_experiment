@@ -1,57 +1,57 @@
 #pragma once
 
-#include "CommInc.h"
+#include "../StdCommHeaders.h"
 
 class SString
 {
 public:
 	SString() = default;
 
-	explicit SString(const char* elem) : data_(elem)
+	explicit SString(const char *elem) : data_(elem)
 	{
-		//fmt::print("using const char* construct\n");
+		// fmt::print("using const char* construct\n");
 	}
 
-	explicit SString(std::string&& elem) : data_(std::forward<std::string>(elem))
+	explicit SString(std::string &&elem) : data_(std::forward<std::string>(elem))
 	{
-		//fmt::print("using rref construct\n");
+		// fmt::print("using rref construct\n");
 	}
 
-	explicit SString(const std::string& elem) : data_(elem)
+	explicit SString(const std::string &elem) : data_(elem)
 	{
-		//fmt::print("using const ref construct\n");
+		// fmt::print("using const ref construct\n");
 	}
 
-	//移动构造
-	SString(SString&& rhs) noexcept
+	// 移动构造
+	SString(SString &&rhs) noexcept
 	{
 		data_ = std::move(rhs.data_);
-		//data_.swap(rhs.data_);
+		// data_.swap(rhs.data_);
 
-		//fmt::print("SString move construct\n");
+		// fmt::print("SString move construct\n");
 	}
 
-	//拷贝构造
-	SString(const SString& rhs)
+	// 拷贝构造
+	SString(const SString &rhs)
 	{
 		data_ = rhs.data_;
 
-		//fmt::print("SString copy construct\n");
+		// fmt::print("SString copy construct\n");
 	}
 
-	//拷贝赋值
-	SString& operator=(const SString& rhs)
+	// 拷贝赋值
+	SString &operator=(const SString &rhs)
 	{
 		data_ = rhs.data_;
-		//fmt::print("SString copy assign\n");
+		// fmt::print("SString copy assign\n");
 		return *this;
 	}
 
-	//移动赋值
-	SString& operator=(SString&& rhs) noexcept
+	// 移动赋值
+	SString &operator=(SString &&rhs) noexcept
 	{
 		data_ = std::move(rhs.data_);
-		//fmt::print("SString move assign\n");
+		// fmt::print("SString move assign\n");
 		return *this;
 	}
 
@@ -72,7 +72,7 @@ public:
 		return data_.empty();
 	}
 
-	void Assign(std::string&& src)
+	void Assign(std::string &&src)
 	{
 		data_ = std::forward<std::string>(src);
 	}
@@ -86,7 +86,7 @@ private:
 	std::string data_;
 };
 
-SString operator+(const SString& lhs, const SString& rhs)
+SString operator+(const SString &lhs, const SString &rhs)
 {
 	SString result;
 	result.Assign(lhs.GetStr() + rhs.GetStr());
@@ -96,16 +96,19 @@ SString operator+(const SString& lhs, const SString& rhs)
 class StringOnlyMove final
 {
 public:
-	StringOnlyMove() {
+	StringOnlyMove()
+	{
 		data_ = new char[1024];
 	}
 
-	explicit StringOnlyMove(const char* s) {
+	explicit StringOnlyMove(const char *s)
+	{
 		data_ = new char[strlen(s) + 1];
 		strcpy(data_, s);
 	}
 
-	~StringOnlyMove() {
+	~StringOnlyMove()
+	{
 		if (data_ != nullptr)
 		{
 			delete data_;
@@ -124,7 +127,8 @@ public:
 	}
 	*/
 
-	StringOnlyMove(StringOnlyMove&& rhs) noexcept {
+	StringOnlyMove(StringOnlyMove &&rhs) noexcept
+	{
 		if (rhs.data_ == nullptr)
 			return;
 
@@ -145,7 +149,8 @@ public:
 	}
 	*/
 
-	StringOnlyMove& operator=(StringOnlyMove&& rhs) noexcept {
+	StringOnlyMove &operator=(StringOnlyMove &&rhs) noexcept
+	{
 		if (rhs.data_ == nullptr || data_ == nullptr)
 			return *this;
 
@@ -169,6 +174,7 @@ public:
 		}
 		return output;
 	}
+
 private:
-	char* data_ = nullptr;
+	char *data_ = nullptr;
 };

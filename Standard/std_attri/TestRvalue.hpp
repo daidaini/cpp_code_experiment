@@ -194,6 +194,23 @@ namespace TestRValue
 		for (int i = 0; i < 10; ++i)
 			fmt::print("{}\n", self_move("move string"));
 	}
+
+	void UserRvalueReturn(int &&row)
+	{
+		auto func = [](int &row)
+		{
+			row = (int)100;
+		};
+
+		func(row);
+	}
+
+	void TestForwardUse()
+	{
+		int row = 0;
+		UserRvalueReturn(std::forward<int>(row));
+		printf("row = %d\n", row);
+	}
 }
 
 namespace MoveSemanticsTest

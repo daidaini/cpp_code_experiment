@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CommInc.h"
+#include "../StdCommHeaders.h"
 
 inline namespace TestTemplate
 {
@@ -59,7 +59,6 @@ inline namespace TestTemplate
 		cout << "全特化\n";
 	}
 
-	// 偏特化代码，错误，无法通过编译
 	template <typename T2>
 	void fun(char a, T2 b)
 	{
@@ -71,8 +70,6 @@ inline namespace TestTemplate
 		Test<double, double> t1(0.1, 0.2);
 		Test<int, char> t2(1, 'A');
 		Test<char, bool> t3('A', true);
-
-		fun('1', "string");
 	}
 
 	class A
