@@ -59,6 +59,7 @@ private:
 		resolver_.async_resolve(host, port,
 								[this](boost::system::error_code ec, boost::asio::ip::tcp::resolver::results_type endpoints)
 								{
+									std::cout << "async_resolve cb thread = " << std::this_thread::get_id() << '\n';
 									if (!ec)
 									{
 										boost::asio::async_connect(socket_, endpoints,
@@ -82,6 +83,7 @@ private:
 		socket_.async_read_some(boost::asio::buffer(read_buffer_, max_length),
 								[this](boost::system::error_code ec, std::size_t length)
 								{
+									std::cout << "async_read_some cb thread = " << std::this_thread::get_id() << '\n';
 									if (!ec)
 									{
 										std::cout.write(read_buffer_, length);
@@ -102,6 +104,7 @@ private:
 								 boost::asio::buffer(write_msgs_.front()),
 								 [this](boost::system::error_code ec, std::size_t /*length*/)
 								 {
+									 std::cout << "async_write cb thread = " << std::this_thread::get_id() << '\n';
 									 if (!ec)
 									 {
 										 write_msgs_.pop_front();
@@ -126,6 +129,7 @@ private:
 		timer_->expires_from_now(boost::posix_time::seconds(seconds));
 		timer_->async_wait([this, seconds, callback](const boost::system::error_code &ec)
 						   {
+							std::cout << "timer async_wait cb thread = " << std::this_thread::get_id() << '\n';
             if (!ec) {
                 callback();
                 repeat_timer(seconds, callback);
