@@ -23,12 +23,18 @@ void OnConnection(ErrorCode code)
     if (code == ErrorCode::Succcess)
     {
         g_IsConnected = true;
+        printf("Connect success\n");
+    }
+    else
+    {
+        g_IsConnected = false;
+        printf("Connect failed\n");
     }
 }
 
 void Test()
 {
-    void *handle = dlopen("libGeneralClient.so", RTLD_LAZY);
+    void *handle = dlopen("libAsyncNetMsg.so", RTLD_LAZY);
 
     assert(handle != nullptr);
 
@@ -59,6 +65,7 @@ void Test()
     }
 
     // getchar();
+    std::this_thread::sleep_for(std::chrono::seconds(25));
 
     send_msg(client, "prepare to end", 14);
     ::sleep(1);
@@ -68,7 +75,7 @@ void Test()
 
 int main(int argc, char *argv[])
 {
-    for (int i = 0; i < 2; ++i)
+    for (int i = 0; i < 1; ++i)
     {
         std::thread([]()
                     { Test(); })
