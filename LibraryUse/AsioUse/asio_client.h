@@ -56,10 +56,27 @@ public:
 private:
 	void connect(const std::string &host, const std::string &port)
 	{
+		/*
+		auto endpoints = resolver_.resolve(host, port);
+
+		boost::asio::async_connect(socket_, endpoints,
+								   [this](boost::system::error_code ec, boost::asio::ip::tcp::endpoint)
+								   {
+									   if (!ec)
+									   {
+										   do_read();
+									   }
+									   else
+									   {
+										   std::cerr << "Connect error: " << ec.message() << std::endl;
+									   }
+								   });
+		*/
+
 		resolver_.async_resolve(host, port,
 								[this](boost::system::error_code ec, boost::asio::ip::tcp::resolver::results_type endpoints)
 								{
-									std::cout << "async_resolve cb thread = " << std::this_thread::get_id() << '\n';
+									std::cout << "async_resolve cb thread = " << ::syscall(SYS_gettid) << '\n';
 									if (!ec)
 									{
 										boost::asio::async_connect(socket_, endpoints,
@@ -83,7 +100,7 @@ private:
 		socket_.async_read_some(boost::asio::buffer(read_buffer_, max_length),
 								[this](boost::system::error_code ec, std::size_t length)
 								{
-									std::cout << "async_read_some cb thread = " << std::this_thread::get_id() << '\n';
+									std::cout << "async_read_some cb thread = " << ::syscall(SYS_gettid) << '\n';
 									if (!ec)
 									{
 										std::cout.write(read_buffer_, length);
@@ -104,7 +121,7 @@ private:
 								 boost::asio::buffer(write_msgs_.front()),
 								 [this](boost::system::error_code ec, std::size_t /*length*/)
 								 {
-									 std::cout << "async_write cb thread = " << std::this_thread::get_id() << '\n';
+									 std::cout << "async_write cb thread = " << ::syscall(SYS_gettid) << '\n';
 									 if (!ec)
 									 {
 										 write_msgs_.pop_front();
@@ -129,11 +146,11 @@ private:
 		timer_->expires_from_now(boost::posix_time::seconds(seconds));
 		timer_->async_wait([this, seconds, callback](const boost::system::error_code &ec)
 						   {
-							std::cout << "timer async_wait cb thread = " << std::this_thread::get_id() << '\n';
-            if (!ec) {
-                callback();
-                repeat_timer(seconds, callback);
-            } });
+							std::cout << "timer async_wait cb thread = " << ::syscall(SYS_gettid) << '\n';
+			if (!ec) {
+				callback();
+				repeat_timer(seconds, callback);
+			} });
 	}
 
 	std::unique_ptr<boost::asio::deadline_timer> timer_;
