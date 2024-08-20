@@ -44,9 +44,17 @@ namespace HD
     {
         m_Socket = std::unique_ptr<boost::asio::ip::tcp::socket>(new boost::asio::ip::tcp::socket(m_IoContext));
 
-        m_Resolver->async_resolve(
-            m_Host, m_Port,
-            [this](boost::system::error_code ec, boost::asio::ip::tcp::resolver::results_type endpoints)
+        auto endpoints = m_Resolver->resolve(m_Host, m_Port);
+        if (endpoints.empty())
+        {
+            printf("connect failed..\n");
+            this->m_ConnCb(ErrorCode::Fail);
+            return;
+        }
+
+        boost::asio::async_connect(
+            *m_Socket, endpoints,
+            [this](boost::system::error_code ec, boost::asio::ip::tcp::tcp::endpoint)
             {
                 if (this == nullptr)
                 {
@@ -54,32 +62,14 @@ namespace HD
                 }
                 if (!ec)
                 {
-                    boost::asio::async_connect(
-                        *m_Socket, endpoints,
-                        [this](boost::system::error_code ec, boost::asio::ip::tcp::tcp::endpoint)
-                        {
-                            if (this == nullptr)
-                            {
-                                return;
-                            }
-                            if (!ec)
-                            {
-                                m_Connected = true;
-                                this->m_ConnCb(ErrorCode::Succcess);
-                                DoRead();
-                                StartRepeatTimer();
-                            }
-                            else
-                            {
-                                m_Connected = false;
-                                // this->m_Cb(ErrorCode::Fail, ec.message().c_str(), ec.message().size());
-                                this->m_ConnCb(ErrorCode::Fail);
-                            }
-                        });
+                    m_Connected = true;
+                    this->m_ConnCb(ErrorCode::Succcess);
+                    DoRead();
+                    StartRepeatTimer();
                 }
                 else
                 {
-                    printf("connect failed..\n");
+                    m_Connected = false;
                     this->m_ConnCb(ErrorCode::Fail);
                 }
             });
