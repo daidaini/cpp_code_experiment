@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CommInc.h"
+#include "../StdCommHeaders.h"
 
 namespace ForEachTest
 {
@@ -144,17 +144,22 @@ inline namespace Algorithm
 		{
 			fmt::print("No find\n");
 		}
+
+		code = "0010000";
+		fmt::print("Repeat {}\n", std::find_if_not(code.begin(), code.end(), [](char elem)
+												   { return elem == '0'; }) == code.end()
+									  ? "YES"
+									  : "NO");
 	}
 
 	void test_partial_sum()
 	{
 		std::vector<int> v{2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 		std::cout << "The first 10 even numbers are: ";
-		std::partial_sum(v.begin() + 4, v.end(),
-						 std::ostream_iterator<int>(std::cout, " "));
+		// std::partial_sum(v.begin() + 4, v.end(), std::ostream_iterator<int>(std::cout, " "));
 		std::cout << '\n';
 
-		std::partial_sum(v.begin() + 4, v.end(), v.begin() + 4, std::multiplies<int>());
+		// std::partial_sum(v.begin() + 4, v.end(), v.begin() + 4, std::multiplies<int>());
 		std::cout << "The first 10 powers of 2 are: ";
 		for (auto n : v)
 		{

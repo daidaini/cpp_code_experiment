@@ -3,6 +3,8 @@
 #include <list>
 #include <iostream>
 
+#include "TestAlgorithm.hpp"
+
 using namespace std;
 
 // std::transform
@@ -33,7 +35,7 @@ void test_transform()
 
 int main(int argc, char *argv[])
 {
-    test_transform();
+    test_std_find();
 
     return 0;
 }
