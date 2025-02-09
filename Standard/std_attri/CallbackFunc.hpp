@@ -1,6 +1,8 @@
 #pragma once
 
-#include "CommInc.h"
+#include "../StdCommHeaders.h"
+
+#include <thread>
 
 //使用函数指针作为回调
 namespace CallbackFunc_0
@@ -29,7 +31,7 @@ namespace CallbackFunc_0
                 if (i % 20 == 5)
                 {
                     std::string content = fmt::format("SendBack: {}", i);
-                    onRspFunc_(content.data(), (int)content.length()); // error
+                    onRspFunc_(content.data(), (int)content.length()); 
                 }
             }
         }
