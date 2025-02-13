@@ -32,7 +32,7 @@ public:
         m_Server.setMessageCallback([this](const TcpConnectionPtr &conn, Buffer *buf, Timestamp time)
                                     { this->OnMessage(conn, buf, time); });
 
-        loop->runEvery(2.0, [this]()
+        loop->runEvery(30.0, [this]()
                        { this->OnTimer(); });
     }
 

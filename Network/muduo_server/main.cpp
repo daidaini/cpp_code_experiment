@@ -1,5 +1,5 @@
 #include "MockJsdServer.h"
-
+#include "Service.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     EventLoop mainLoop;
 
     InetAddress addr(port);
-    MockServer mockServ(&mainLoop, &addr);
+    Service mockServ(&mainLoop, &addr);
 
     mockServ.Start();
 
