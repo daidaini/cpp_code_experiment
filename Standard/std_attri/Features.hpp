@@ -1,11 +1,8 @@
 #pragma once
 
 #include <iomanip>
-#include <iostream>
-#include <stdexcept>
-#include <string>
-#include <stdio.h>
-#include "CommInc.h"
+
+#include "../StdCommHeaders.h"
 
 using namespace std;
 
@@ -167,4 +164,67 @@ namespace TemplateSpecializationTest
 		cout << "偏特化\n";
 	}
 
+}
+
+namespace EnumClassTest
+{
+	enum class PushType
+	{
+		Order = 1,			   // 委托，含撤单委托
+		CancelTrade = 2,	   // 撤单成交
+		Trade = 3,			   // 成交
+		Text = 4,			   // 文本消息
+		ExerciseOrder = 6,	   // 行权委托
+		Error = 10,			   // 错误
+		SystemStatus = 11,	   // 系统状态
+		InnerFundTransfer = 12 // 资金内转 CTP使用
+	};
+
+	void Test()
+	{
+		cout << sizeof(PushType) << ", " << sizeof(PushType::ExerciseOrder) << endl;
+	}
+}
+
+namespace FloatTest
+{
+	// 函数：将字符串转换为浮点数并保留精度
+	double stringToDouble(const std::string &str)
+	{
+		return atof(str.c_str());
+	}
+
+	// 函数：格式化输出浮点数
+	void printWithPrecision(double value, int precision)
+	{
+		std::cout << std::fixed << std::setprecision(precision) << value << std::endl;
+	}
+
+	// 函数：四舍五入到指定的小数位
+	double roundToPrecision(double value, int precision)
+	{
+		double factor = std::pow(10.0, precision);
+		return std::round(value * factor) / factor;
+	}
+
+	void Test()
+	{
+		std::string input = "0.2909011";
+
+		// 转换字符串为浮点数
+		// double value = stringToDouble(input);
+		auto value = atof(input.c_str());
+		// 输出原始值
+		// std::cout << "原始浮点数: " << value << std::endl;
+		fmt::print("原始浮点数: {}\n", value);
+
+		// 格式化输出
+		std::cout
+			<< "格式化输出 (2位小数): ";
+		printWithPrecision(value, 2);
+
+		// 四舍五入到2位小数
+		double roundedValue = roundToPrecision(value, 2);
+		std::cout << "四舍五入 (2位小数): " << roundedValue << std::endl;
+	}
 }

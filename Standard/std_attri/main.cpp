@@ -1,11 +1,12 @@
-#include "TestRvalue.hpp"
 
 #include "TestTemplate.hpp"
-#include "CallbackFunc.hpp"
+#include "Features.hpp"
 
 int main(int argc, char *argv[])
 {
-    CallbackFunc_0::Test();
+    // TestTemplate::TestTemplate();
+
+    FloatTest::Test();
 
     return 0;
 }
