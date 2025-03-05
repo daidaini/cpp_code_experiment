@@ -1,12 +1,12 @@
 
-#include "TestTemplate.hpp"
-#include "Features.hpp"
+// #include "TestTemplate.hpp"
+#include "TestCondVariable.hpp"
 
 int main(int argc, char *argv[])
 {
     // TestTemplate::TestTemplate();
 
-    FloatTest::Test();
+    ThreadTest::tFunc();
 
     return 0;
 }

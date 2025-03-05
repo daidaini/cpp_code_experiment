@@ -11,6 +11,9 @@
 #include <deque>
 #include <queue>
 #include <stdexcept>
+#include <thread>
+#include <condition_variable>
+#include <mutex>
 
 #include <fmt/format.h>
 
